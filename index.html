@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif 30 Soal Essay: Konversi Volume & Volume Kubus Balok</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- KaTeX CSS & JS untuk merender notasi matematika dengan rapi -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderAllMath()"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .isometric-svg { filter: drop-shadow(0px 4px 6px rgba(15, 23, 42, 0.12)); }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- ====================================================================== -->
+    <!-- HEADER & STATUS SIMPAN                                                 -->
+    <!-- ====================================================================== -->
+    <header class="bg-gradient-to-r from-indigo-700 via-teal-600 to-emerald-600 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 w-full md:w-auto">
+                <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-md shadow-inner text-2xl">📝</div>
+                <div>
+                    <h1 class="text-base md:text-xl font-extrabold tracking-tight">Kuis Interaktif 30 Soal Essay Volume</h1>
+                    <p class="text-xs text-teal-100">Konversi Cair & Padat • Jembatan Penghubung • Kubus & Balok Satuan hingga Rumus</p>
+                </div>
+            </div>
+
+            <!-- Indikator Skor & Status Penyimpanan Otomatis -->
+            <div class="flex flex-wrap items-center justify-between md:justify-end gap-2.5 w-full md:w-auto text-xs">
+                <button type="button" onclick="toggleNavigationPanel()" class="bg-white/15 hover:bg-white/25 border border-white/25 px-3 py-1.5 rounded-xl flex items-center gap-1.5 font-extrabold transition-all">
+                    <span id="nav-toggle-icon">🧭</span>
+                    <span id="nav-toggle-label">Sembunyikan Navigasi</span>
+                </button>
+                <div id="save-status-pill" class="bg-black/20 border border-white/20 px-3 py-1.5 rounded-xl flex items-center gap-2 font-semibold">
+                    <span id="save-dot" class="w-2.5 h-2.5 rounded-full bg-amber-300 animate-pulse"></span>
+                    <span id="save-status-text">Menyiapkan penyimpanan...</span>
+                </div>
+                <div class="bg-white text-indigo-900 px-3.5 py-1.5 rounded-xl font-extrabold shadow">
+                    Benar: <span id="header-correct-count" class="text-emerald-600">0</span>/30
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ====================================================================== -->
+    <!-- KONTEN UTAMA                                                           -->
+    <!-- ====================================================================== -->
+    <main id="quiz-main-layout" class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- ================================================================== -->
+        <!-- KOLOM KIRI (4 KOLOM): NAVIGASI NOMOR SOAL & RINGKASAN PROGRES       -->
+        <!-- ================================================================== -->
+        <aside id="quiz-nav-sidebar" class="lg:col-span-4 bg-white rounded-3xl p-5 shadow-sm border border-slate-200 lg:sticky lg:top-24 space-y-5">
+            <div>
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-700">Navigasi 30 Soal Essay</span>
+                    <span class="text-xs font-bold text-slate-500">Terjawab: <strong id="nav-answered-count" class="text-slate-800">0</strong>/30</span>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Ketik jawaban angka (mendukung pecahan desimal seperti <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold">2,5</code> atau <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold">2.5</code>), status <strong>Benar / Salah</strong> langsung muncul otomatis!
+                </p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-1.5">
+                <div class="flex justify-between text-[11px] font-bold text-slate-600">
+                    <span>Progres Penyelesaian</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                    <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-teal-500 to-indigo-600 transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Legenda Warna Tombol Navigasi -->
+            <div class="grid grid-cols-3 gap-2 text-[11px] font-bold bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                <div class="flex items-center gap-1.5 text-slate-600">
+                    <span class="w-3.5 h-3.5 rounded bg-white border-2 border-slate-300 inline-block"></span>
+                    <span>Belum</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-emerald-700">
+                    <span class="w-3.5 h-3.5 rounded bg-emerald-500 inline-block"></span>
+                    <span>Benar</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-rose-700">
+                    <span class="w-3.5 h-3.5 rounded bg-rose-500 inline-block"></span>
+                    <span>Salah</span>
+                </div>
+            </div>
+
+            <!-- Grid 30 Tombol Nomor Soal -->
+            <div id="question-nav-grid" class="grid grid-cols-6 gap-2 max-h-64 overflow-y-auto custom-scroll p-1">
+                <!-- Diisi otomatis oleh JavaScript -->
+            </div>
+
+            <!-- Filter Topik Cepat -->
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+                <span class="block text-[11px] font-extrabold text-slate-500 uppercase">Lompat ke Kelompok Topik:</span>
+                <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                    <button onclick="jumpToQuestion(1)" class="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-left transition-all">💧 Soal 1–6: Cair (Liter)</button>
+                    <button onclick="jumpToQuestion(7)" class="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-left transition-all">🧱 Soal 7–12: Padat (Kubik)</button>
+                    <button onclick="jumpToQuestion(13)" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-left transition-all">🌉 Soal 13–18: Jembatan</button>
+                    <button onclick="jumpToQuestion(19)" class="p-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-left transition-all">📦 Soal 19–30: Kubus & Balok</button>
+                </div>
+            </div>
+
+            <!-- Tombol Reset & Ringkasan Nilai -->
+            <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                <button onclick="openSummaryModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs shadow transition-all">
+                    📊 Lihat Rekap Nilai & Pembahasan
+                </button>
+                <button onclick="openResetModal()" class="w-full bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 font-bold py-2 px-4 rounded-xl text-xs border border-slate-200 hover:border-rose-200 transition-all">
+                    🔄 Kosongkan Semua Jawaban
+                </button>
+            </div>
+        </aside>
+
+        <!-- ================================================================== -->
+        <!-- KOLOM KANAN: AREA SOAL ESSAY AKTIF (TANPA SCROLL DAFTAR PANJANG)    -->
+        <!-- ================================================================== -->
+        <section id="quiz-question-column" class="lg:col-span-8 space-y-5">
+
+            <!-- Panel Fokus Satu Soal (Mode Fokus Interaktif Tanpa Scroll Daftar) -->
+            <div id="active-question-card" class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border-2 border-indigo-200 space-y-5">
+                <!-- Header Soal Aktif -->
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2.5">
+                        <span id="active-q-badge" class="bg-indigo-600 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-xl shadow-sm">Soal #1 dari 30</span>
+                        <span id="active-q-topic" class="bg-teal-100 text-teal-800 text-xs font-extrabold px-3 py-1 rounded-full">Konversi Satuan Cair</span>
+                    </div>
+                    <span id="active-q-status-pill" class="text-xs font-extrabold px-3 py-1 rounded-full bg-slate-100 text-slate-600">Menunggu Jawaban</span>
+                </div>
+
+                <!-- Isi Pertanyaan & Ilustrasi -->
+                <div id="active-q-body" class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                    <!-- Diisi oleh JavaScript -->
+                </div>
+
+                <!-- Input Jawaban Essay Langsung (Real-Time Check) -->
+                <div class="bg-slate-50 p-4 md:p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <label for="essay-answer-input" class="block text-xs md:text-sm font-extrabold text-slate-800">
+                        Ketik Jawaban Angkamu di Sini (status Benar/Salah muncul otomatis):
+                    </label>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <div class="flex-grow flex items-center bg-white border-2 border-slate-300 focus-within:border-indigo-600 rounded-2xl px-4 py-2.5 shadow-inner">
+                            <input
+                                type="text"
+                                inputmode="decimal"
+                                id="essay-answer-input"
+                                placeholder="Contoh: 2500 atau 1,5"
+                                oninput="handleEssayInput(currentQuestionIndex, this.value)"
+                                class="w-full font-extrabold text-base md:text-lg text-slate-900 focus:outline-none bg-transparent"
+                            >
+                            <span id="active-q-unit" class="ml-2 pl-3 border-l border-slate-200 text-xs md:text-sm font-extrabold text-indigo-700 whitespace-nowrap">ml</span>
+                        </div>
+                        <button type="button" onclick="clearCurrentAnswer()" class="px-4 py-3 rounded-2xl bg-white hover:bg-slate-100 border border-slate-300 text-xs font-bold text-slate-600 transition-all">
+                            Hapus Isian
+                        </button>
+                    </div>
+
+                    <!-- Kotak Umpan Balik Benar / Salah Instan -->
+                    <div id="active-q-feedback" class="hidden p-4 rounded-2xl text-xs md:text-sm font-bold border"></div>
+                </div>
+
+                <!-- Tombol Navigasi Sebelumnya & Berikutnya -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <button type="button" id="btn-prev-q" onclick="navigateStep(-1)" class="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs md:text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                        ← Soal Sebelumnya
+                    </button>
+                    <div class="text-xs font-bold text-slate-500">
+                        Soal <span id="pos-indicator">1 / 30</span>
+                    </div>
+                    <button type="button" id="btn-next-q" onclick="navigateStep(1)" class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs md:text-sm shadow transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                        Soal Berikutnya →
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-5 mt-10 text-center text-xs text-slate-500">
+        <p>Kuis Interaktif 30 Soal Essay Matematika • Konversi Volume Cair & Padat, Jembatan Penghubung, serta Volume Kubus & Balok</p>
+    </footer>
+
+    <!-- ====================================================================== -->
+    <!-- MODAL REKAP NILAI & PEMBAHASAN                                        -->
+    <!-- ====================================================================== -->
+    <div id="summary-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-slate-200 max-h-[88vh] flex flex-col space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-lg md:text-xl font-extrabold text-slate-900">📊 Rekap Hasil Kuis (30 Soal Essay)</h3>
+                <button onclick="closeSummaryModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 font-bold text-slate-600 flex items-center justify-center">✕</button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl">
+                    <div class="text-[11px] font-bold text-emerald-700">Jawaban Benar</div>
+                    <div id="modal-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 p-3.5 rounded-2xl">
+                    <div class="text-[11px] font-bold text-rose-700">Jawaban Salah</div>
+                    <div id="modal-wrong" class="text-2xl font-extrabold text-rose-600">0</div>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-200 p-3.5 rounded-2xl">
+                    <div class="text-[11px] font-bold text-indigo-700">Nilai Akhir</div>
+                    <div id="modal-score" class="text-2xl font-extrabold text-indigo-700">0</div>
+                </div>
+            </div>
+
+            <div id="modal-breakdown-list" class="overflow-y-auto custom-scroll space-y-2 text-xs pr-1 flex-grow">
+                <!-- Diisi otomatis -->
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex justify-end">
+                <button onclick="closeSummaryModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs">
+                    Tutup Rekap
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- MODAL KONFIRMASI RESET JAWABAN                                         -->
+    <!-- ====================================================================== -->
+    <div id="reset-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div class="text-2xl">⚠️</div>
+            <h3 class="text-lg font-extrabold text-slate-900">Kosongkan Semua Jawaban?</h3>
+            <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                Tindakan ini akan menghapus seluruh isian jawaban pada 30 soal essay di sesi ini maupun penyimpanan tersimpan. Yakin ingin mengulang dari awal?
+            </p>
+            <div class="flex justify-end gap-2.5 pt-2">
+                <button onclick="closeResetModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">Batal</button>
+                <button onclick="confirmResetAllAnswers()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow">Ya, Kosongkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- BANK 30 SOAL ESSAY, ILUSTRASI SVG & LOGIKA KUIS                      -->
+    <!-- ====================================================================== -->
+    <script>
+        // Helper pembuat ilustrasi SVG isometrik susunan kubus/balok satuan atau bangun ruang
+        function renderUnitStackSVG(nx, ny, nz, labelX, labelY, labelZ, colorScheme = 'teal') {
+            // Proyeksi isometrik sederhana:
+            // Setiap unit bergeser ke kanan-bawah (+dx, +dy_r) dan kiri-bawah (-dx, +dy_l), naik ke atas (-h)
+            const w = 22;  // setengah lebar isometrik per unit
+            const h = 11;  // tinggi atap per unit
+            const cubeH = 20; // tinggi sisi tegak per unit
+
+            const originX = 125;
+            const originY = 42 + (nz - 1) * cubeH;
+
+            let cubesMarkup = '';
+            const palettes = {
+                amber: { top: '#fde047', left: '#f59e0b', right: '#d97706' },
+                teal:  { top: '#5eead4', left: '#14b8a6', right: '#0f766e' },
+                indigo:{ top: '#a5b4fc', left: '#6366f1', right: '#4338ca' }
+            };
+            const pal = palettes[colorScheme] || palettes.teal;
+
+            // Gambar dari belakang (z=0..nz-1, y=0..ny-1, x=0..nx-1) agar urutan oklusi rapi
+            for (let z = 0; z < nz; z++) {
+                for (let y = 0; y < ny; y++) {
+                    for (let x = 0; x < nx; x++) {
+                        const cx = originX + (x - y) * w;
+                        const cy = originY + (x + y) * h - z * cubeH;
+
+                        const p0 = `${cx},${cy}`;
+                        const p1 = `${cx + w},${cy + h}`;
+                        const p2 = `${cx},${cy + 2 * h}`;
+                        const p3 = `${cx - w},${cy + h}`;
+
+                        const b1 = `${cx + w},${cy + h + cubeH}`;
+                        const b2 = `${cx},${cy + 2 * h + cubeH}`;
+                        const b3 = `${cx - w},${cy + h + cubeH}`;
+
+                        cubesMarkup += `
+                            <polygon points="${p0} ${p1} ${p2} ${p3}" fill="${pal.top}" stroke="#0f172a" stroke-width="1.4" stroke-linejoin="round"/>
+                            <polygon points="${p3} ${p2} ${b2} ${b3}" fill="${pal.left}" stroke="#0f172a" stroke-width="1.4" stroke-linejoin="round"/>
+                            <polygon points="${p2} ${p1} ${b1} ${b2}" fill="${pal.right}" stroke="#0f172a" stroke-width="1.4" stroke-linejoin="round"/>
+                        `;
+                    }
+                }
+            }
+
+            const totalH = originY + (nx + ny) * h + cubeH + 26;
+            const svgW = 250;
+
+            // Koordinat label di bagian depan bawah
+            const frontCornerX = originX + (nx - ny) * w;
+            const frontCornerY = originY + (nx + ny) * h + cubeH;
+
+            return `
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 flex flex-col items-center justify-center shadow-2xs">
+                    <svg width="${svgW}" height="${Math.max(125, totalH)}" viewBox="0 0 ${svgW} ${Math.max(125, totalH)}" class="isometric-svg max-w-full h-auto">
+                        ${cubesMarkup}
+                        <text x="${frontCornerX - 18}" y="${frontCornerY + 15}" fill="#be123c" font-size="11" font-weight="800">${labelX}</text>
+                        <text x="${frontCornerX + 14}" y="${frontCornerY + 15}" fill="#0369a1" font-size="11" font-weight="800">${labelY}</text>
+                        <text x="${originX + nx * w + 8}" y="${originY + nx * h - (nz * cubeH) / 2 + 6}" fill="#047857" font-size="11" font-weight="800">${labelZ}</text>
+                    </svg>
+                </div>
+            `;
+        }
+
+        // Helper ilustrasi bangun ruang berlabel ukuran (kubus / balok)
+        function renderSolidBoxSVG(type, lbl1, lbl2, lbl3, theme = 'amber') {
+            const colors = theme === 'amber'
+                ? { top: '#fde047', left: '#f59e0b', right: '#d97706', text: '#78350f' }
+                : { top: '#5eead4', left: '#14b8a6', right: '#0f766e', text: '#115e59' };
+
+            return `
+                <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center justify-center">
+                    <svg width="210" height="145" viewBox="0 0 210 145" class="isometric-svg max-w-full h-auto">
+                        <polygon points="105,16 162,42 105,68 48,42" fill="${colors.top}" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+                        <polygon points="48,42 105,68 105,114 48,88" fill="${colors.left}" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+                        <polygon points="105,68 162,42 162,88 105,114" fill="${colors.right}" stroke="#0f172a" stroke-width="2" stroke-linejoin="round"/>
+                        <text x="36" y="114" fill="${colors.text}" font-size="11" font-weight="800">${lbl1}</text>
+                        <text x="116" y="114" fill="${colors.text}" font-size="11" font-weight="800">${lbl2}</text>
+                        <text x="165" y="70" fill="${colors.text}" font-size="11" font-weight="800">${lbl3}</text>
+                    </svg>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase mt-1">${type === 'cube' ? 'Bangun Ruang Kubus' : 'Bangun Ruang Balok'}</span>
+                </div>
+            `;
+        }
+
+        // ======================================================================
+        // BANK 30 SOAL ESSAY (BERBEDA DARI CONTOH & LATIHAN PADA MATERI)
+        // ======================================================================
+        const QUIZ_QUESTIONS = [
+            // --- BAGIAN 1: KONVERSI SATUAN VOLUME CAIR (SOAL 1 - 6) ---
+            {
+                id: 1,
+                topic: "Konversi Cair (Liter)",
+                badgeClass: "bg-teal-100 text-teal-800",
+                question: "Sebuah teko berisi <strong>3,25 Liter</strong> air mineral. Berapakah isi air tersebut jika dinyatakan dalam satuan <strong>ml</strong>?",
+                unit: "ml",
+                answer: 3250,
+                explanation: "Dari l ke ml turun 3 tangga (× 1.000). Jadi 3,25 × 1.000 = 3.250 ml."
+            },
+            {
+                id: 2,
+                topic: "Konversi Cair (Liter)",
+                badgeClass: "bg-teal-100 text-teal-800",
+                question: "Sebuah drum minyak menyimpan <strong>4.800 ml</strong> minyak kelapa. Berapakah volume minyak tersebut dalam satuan <strong>Liter</strong>?",
+                unit: "Liter",
+                answer: 4.8,
+                explanation: "Dari ml ke l naik 3 tangga (÷ 1.000). Jadi 4.800 ÷ 1.000 = 4,8 Liter."
+            },
+            {
+                id: 3,
+                topic: "Konversi Cair (Liter)",
+                badgeClass: "bg-teal-100 text-teal-800",
+                question: "Sebuah tandon kecil memuat <strong>9 dal (dekaliter)</strong> air. Berapa <strong>Liter</strong> kapasitas air pada tandon tersebut?",
+                unit: "Liter",
+                answer: 90,
+                explanation: "Dari dal ke l turun 1 tangga (× 10). Jadi 9 × 10 = 90 Liter."
+            },
+            {
+                id: 4,
+                topic: "Konversi Cair (Liter)",
+                badgeClass: "bg-teal-100 text-teal-800",
+                question: "Kapasitas tangki air sebuah mobil pemadam adalah <strong>5 kl (kiloliter)</strong>. Berapa <strong>Liter</strong> air yang dapat ditampung tangki tersebut?",
+                unit: "Liter",
+                answer: 5000,
+                explanation: "Dari kl ke l turun 3 tangga (× 1.000). Jadi 5 × 1.000 = 5.000 Liter."
+            },
+            {
+                id: 5,
+                topic: "Konversi Cair (Liter)",
+                badgeClass: "bg-teal-100 text-teal-800",
+                question: "Sebuah gelas ukur berisi <strong>65 dl (desiliter)</strong> larutan. Berapakah volume larutan tersebut dalam <strong>Liter</strong>?",
+                unit: "Liter",
+                answer: 6.5,
+                explanation: "Dari dl ke l naik 1 tangga (÷ 10). Jadi 65 ÷ 10 = 6,5 Liter."
+            },
+            {
+                id: 6,
+                topic: "Konversi Cair (Liter)",
+                badgeClass: "bg-teal-100 text-teal-800",
+                question: "Ibu mencampur <strong>1,75 Liter</strong> air gula dan <strong>750 ml</strong> perasan jeruk. Berapakah total minuman tersebut dalam satuan <strong>ml</strong>?",
+                unit: "ml",
+                answer: 2500,
+                explanation: "1,75 Liter = 1,75 × 1.000 = 1.750 ml. Lalu 1.750 ml + 750 ml = 2.500 ml."
+            },
+
+            // --- BAGIAN 2: KONVERSI SATUAN VOLUME PADAT / KUBIK (SOAL 7 - 12) ---
+            {
+                id: 7,
+                topic: "Konversi Padat (Kubik)",
+                badgeClass: "bg-indigo-100 text-indigo-800",
+                question: "Sebuah blok kayu memiliki volume <strong>3,5 dm³</strong>. Berapakah volume blok kayu tersebut dalam satuan <strong>cm³</strong>?",
+                unit: "cm³",
+                answer: 3500,
+                explanation: "Pada tangga kubik (³), dari dm³ ke cm³ turun 1 tangga (× 1.000). Jadi 3,5 × 1.000 = 3.500 cm³."
+            },
+            {
+                id: 8,
+                topic: "Konversi Padat (Kubik)",
+                badgeClass: "bg-indigo-100 text-indigo-800",
+                question: "Sebuah gundukan pasir memiliki volume <strong>9.000 dm³</strong>. Berapakah volume pasir tersebut dalam satuan <strong>m³</strong>?",
+                unit: "m³",
+                answer: 9,
+                explanation: "Dari dm³ ke m³ naik 1 tangga kubik (÷ 1.000). Jadi 9.000 ÷ 1.000 = 9 m³."
+            },
+            {
+                id: 9,
+                topic: "Konversi Padat (Kubik)",
+                badgeClass: "bg-indigo-100 text-indigo-800",
+                question: "Sebuah potongan logam kecil bervolume <strong>14.000 mm³</strong>. Berapa <strong>cm³</strong> volume logam tersebut?",
+                unit: "cm³",
+                answer: 14,
+                explanation: "Dari mm³ ke cm³ naik 1 tangga kubik (÷ 1.000). Jadi 14.000 ÷ 1.000 = 14 cm³."
+            },
+            {
+                id: 10,
+                topic: "Konversi Padat (Kubik)",
+                badgeClass: "bg-indigo-100 text-indigo-800",
+                question: "Sebuah bak beton berbentuk kubus bervolume <strong>2 m³</strong>. Berapakah volumenya jika diubah menjadi satuan <strong>cm³</strong>?",
+                unit: "cm³",
+                answer: 2000000,
+                explanation: "Dari m³ ke cm³ turun 2 tangga kubik (× 1.000 × 1.000 = × 1.000.000). Jadi 2 × 1.000.000 = 2.000.000 cm³."
+            },
+            {
+                id: 11,
+                topic: "Konversi Padat (Kubik)",
+                badgeClass: "bg-indigo-100 text-indigo-800",
+                question: "Sebuah kolam penampungan tanah berisi <strong>1,2 dam³</strong>. Berapakah volumenya dalam satuan <strong>m³</strong>?",
+                unit: "m³",
+                answer: 1200,
+                explanation: "Dari dam³ ke m³ turun 1 tangga kubik (× 1.000). Jadi 1,2 × 1.000 = 1.200 m³."
+            },
+            {
+                id: 12,
+                topic: "Konversi Padat (Kubik)",
+                badgeClass: "bg-indigo-100 text-indigo-800",
+                question: "Hitunglah hasil dari <strong>5.000 cm³ + 2 dm³</strong> dalam satuan <strong>cm³</strong>!",
+                unit: "cm³",
+                answer: 7000,
+                explanation: "2 dm³ = 2 × 1.000 = 2.000 cm³. Kemudian 5.000 cm³ + 2.000 cm³ = 7.000 cm³."
+            },
+
+            // --- BAGIAN 3: JEMBATAN PENGHUBUNG CAIR & PADAT (SOAL 13 - 18) ---
+            {
+                id: 13,
+                topic: "Jembatan Cair & Padat",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah ember plastik berkapasitas <strong>18 dm³</strong>. Berdasarkan jembatan kesetaraan, berapa <strong>Liter</strong> air yang dapat diisikan ke ember tersebut?",
+                unit: "Liter",
+                answer: 18,
+                explanation: "Gunakan jembatan utama: 1 dm³ = 1 Liter. Maka 18 dm³ = 18 Liter."
+            },
+            {
+                id: 14,
+                topic: "Jembatan Cair & Padat",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah suntikan medis menunjukkan takaran <strong>850 cm³</strong>. Berapakah takaran tersebut dalam satuan <strong>ml</strong>?",
+                unit: "ml",
+                answer: 850,
+                explanation: "Gunakan jembatan kecil: 1 cm³ = 1 ml = 1 cc. Jadi 850 cm³ = 850 ml."
+            },
+            {
+                id: 15,
+                topic: "Jembatan Cair & Padat",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah toren air berkapasitas <strong>7 m³</strong>. Berapakah kapasitas toren tersebut jika diubah menjadi <strong>Liter</strong>?",
+                unit: "Liter",
+                answer: 7000,
+                explanation: "Gunakan jembatan: 1 m³ = 1.000 dm³ = 1.000 Liter. Maka 7 m³ = 7.000 Liter."
+            },
+            {
+                id: 16,
+                topic: "Jembatan Cair & Padat",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah wadah berbentuk kubus memuat air sebanyak <strong>6 Liter</strong>. Berapakah volume wadah tersebut dalam satuan <strong>cm³</strong>?",
+                unit: "cm³",
+                answer: 6000,
+                explanation: "6 Liter = 6.000 ml. Karena 1 ml = 1 cm³, maka 6 Liter = 6.000 cm³."
+            },
+            {
+                id: 17,
+                topic: "Jembatan Cair & Padat",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah bak air berisi <strong>12.500 cm³</strong> air. Berapakah volume air tersebut jika dinyatakan dalam <strong>Liter</strong>?",
+                unit: "Liter",
+                answer: 12.5,
+                explanation: "12.500 cm³ = 12.500 ml. Bagi 1.000 untuk ke Liter: 12.500 ÷ 1.000 = 12,5 Liter."
+            },
+            {
+                id: 18,
+                topic: "Jembatan Cair & Padat",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Hitunglah hasil dari <strong>1,5 m³ + 250 Liter</strong> dalam satuan <strong>Liter</strong>!",
+                unit: "Liter",
+                answer: 1750,
+                explanation: "1,5 m³ = 1,5 × 1.000 = 1.500 Liter. Tambahkan dengan 250 Liter: 1.500 + 250 = 1.750 Liter."
+            },
+
+            // --- BAGIAN 4: VOLUME KUBUS & BALOK (SATUAN HINGGA RUMUS, SOAL 19 - 30) ---
+            {
+                id: 19,
+                topic: "Kubus Satuan",
+                badgeClass: "bg-purple-100 text-purple-800",
+                question: "Perhatikan gambar susunan kubus satuan berbentuk kubus dengan panjang rusuk 3 satuan ke samping, 3 satuan ke belakang, dan 3 tingkat ke atas. Berapa <strong>kubus satuan</strong> volumenya?",
+                unit: "kubus satuan",
+                answer: 27,
+                explanation: "Banyak kubus satuan = 3 × 3 × 3 = 27 kubus satuan.",
+                svg: renderUnitStackSVG(3, 3, 3, "s = 3", "s = 3", "s = 3", "amber")
+            },
+            {
+                id: 20,
+                topic: "Balok Satuan",
+                badgeClass: "bg-purple-100 text-purple-800",
+                question: "Perhatikan susunan kubus satuan berbentuk balok pada gambar (4 ke samping, 2 ke belakang, 2 tingkat ke atas). Berapa <strong>kubus satuan</strong> volume balok tersebut?",
+                unit: "kubus satuan",
+                answer: 16,
+                explanation: "Alas = 4 × 2 = 8 kubus satuan, ditumpuk 2 lapis → 8 × 2 = 16 kubus satuan.",
+                svg: renderUnitStackSVG(4, 2, 2, "p = 4", "l = 2", "t = 2", "teal")
+            },
+            {
+                id: 21,
+                topic: "Balok Satuan",
+                badgeClass: "bg-purple-100 text-purple-800",
+                question: "Hitunglah banyaknya kubus satuan pada susunan balok di gambar (3 ke samping, 3 ke belakang, 2 tingkat ke atas)!",
+                unit: "kubus satuan",
+                answer: 18,
+                explanation: "Banyak kubus satuan = p × l × t = 3 × 3 × 2 = 18 kubus satuan.",
+                svg: renderUnitStackSVG(3, 3, 2, "p = 3", "l = 3", "t = 2", "indigo")
+            },
+            {
+                id: 22,
+                topic: "Rumus Volume Kubus",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah kotak perhiasan berbentuk <strong>kubus</strong> memiliki panjang rusuk s = 7 cm. Berapakah volume kotak perhiasan tersebut dalam <strong>cm³</strong>?",
+                unit: "cm³",
+                answer: 343,
+                explanation: "Gunakan rumus volume kubus: V = s × s × s = 7 × 7 × 7 = 49 × 7 = 343 cm³.",
+                svg: renderSolidBoxSVG("cube", "s = 7 cm", "s = 7 cm", "s = 7 cm", "amber")
+            },
+            {
+                id: 23,
+                topic: "Rumus Volume Kubus",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah rubik berbentuk <strong>kubus</strong> memiliki panjang rusuk s = 8 cm. Hitunglah volume rubik tersebut dalam <strong>cm³</strong>!",
+                unit: "cm³",
+                answer: 512,
+                explanation: "Rumus volume kubus: V = s × s × s = 8 × 8 × 8 = 64 × 8 = 512 cm³.",
+                svg: renderSolidBoxSVG("cube", "s = 8 cm", "s = 8 cm", "s = 8 cm", "amber")
+            },
+            {
+                id: 24,
+                topic: "Rumus Volume Kubus",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah bak air berbentuk <strong>kubus</strong> memiliki panjang rusuk s = 9 dm. Berapakah volume bak air tersebut dalam satuan <strong>dm³</strong>?",
+                unit: "dm³",
+                answer: 729,
+                explanation: "Rumus volume kubus: V = 9 × 9 × 9 = 81 × 9 = 729 dm³.",
+                svg: renderSolidBoxSVG("cube", "s = 9 dm", "s = 9 dm", "s = 9 dm", "amber")
+            },
+            {
+                id: 25,
+                topic: "Rumus Volume Balok",
+                badgeClass: "bg-teal-100 text-teal-900",
+                question: "Sebuah kotak sepatu berbentuk <strong>balok</strong> berukuran panjang p = 12 cm, lebar l = 6 cm, dan tinggi t = 5 cm. Berapa <strong>cm³</strong> volumenya?",
+                unit: "cm³",
+                answer: 360,
+                explanation: "Rumus volume balok: V = p × l × t = 12 × 6 × 5 = 72 × 5 = 360 cm³.",
+                svg: renderSolidBoxSVG("box", "p = 12 cm", "l = 6 cm", "t = 5 cm", "teal")
+            },
+            {
+                id: 26,
+                topic: "Rumus Volume Balok",
+                badgeClass: "bg-teal-100 text-teal-900",
+                question: "Sebuah lemari kecil berbentuk <strong>balok</strong> memiliki panjang p = 15 cm, lebar l = 8 cm, dan tinggi t = 10 cm. Hitunglah volumenya dalam <strong>cm³</strong>!",
+                unit: "cm³",
+                answer: 1200,
+                explanation: "Rumus volume balok: V = p × l × t = 15 × 8 × 10 = 120 × 10 = 1.200 cm³.",
+                svg: renderSolidBoxSVG("box", "p = 15 cm", "l = 8 cm", "t = 10 cm", "teal")
+            },
+            {
+                id: 27,
+                topic: "Rumus Volume Balok",
+                badgeClass: "bg-teal-100 text-teal-900",
+                question: "Sebuah bak mandi berbentuk <strong>balok</strong> berukuran panjang p = 12 dm, lebar l = 5 dm, dan tinggi t = 6 dm. Berapa <strong>dm³</strong> volumenya?",
+                unit: "dm³",
+                answer: 360,
+                explanation: "Rumus volume balok: V = p × l × t = 12 × 5 × 6 = 60 × 6 = 360 dm³.",
+                svg: renderSolidBoxSVG("box", "p = 12 dm", "l = 5 dm", "t = 6 dm", "teal")
+            },
+            {
+                id: 28,
+                topic: "Balok & Jembatan Liter",
+                badgeClass: "bg-indigo-100 text-indigo-900",
+                question: "Sebuah akuarium berbentuk <strong>balok</strong> berukuran panjang 30 cm, lebar 20 cm, dan tinggi 15 cm diisi air penuh. Berapa <strong>Liter</strong> air di dalamnya?",
+                unit: "Liter",
+                answer: 9,
+                explanation: "Volume balok = 30 × 20 × 15 = 9.000 cm³ = 9.000 ml. Ubah ke Liter (÷ 1.000): 9.000 ÷ 1.000 = 9 Liter.",
+                svg: renderSolidBoxSVG("box", "p = 30 cm", "l = 20 cm", "t = 15 cm", "teal")
+            },
+            {
+                id: 29,
+                topic: "Kubus & Jembatan Liter",
+                badgeClass: "bg-amber-100 text-amber-900",
+                question: "Sebuah kotak air berbentuk <strong>kubus</strong> memiliki panjang rusuk s = 20 cm. Jika diisi air penuh, berapa <strong>Liter</strong> air yang tertampung?",
+                unit: "Liter",
+                answer: 8,
+                explanation: "Volume kubus = 20 × 20 × 20 = 8.000 cm³ = 8.000 ml. Ubah ke Liter (÷ 1.000): 8.000 ÷ 1.000 = 8 Liter.",
+                svg: renderSolidBoxSVG("cube", "s = 20 cm", "s = 20 cm", "s = 20 cm", "amber")
+            },
+            {
+                id: 30,
+                topic: "Soal Cerita Gabungan",
+                badgeClass: "bg-rose-100 text-rose-800",
+                question: "Sebuah bak berbentuk <strong>balok</strong> berukuran 40 cm × 25 cm × 30 cm baru terisi air <strong>12 Liter</strong>. Berapa <strong>Liter</strong> lagi air yang diperlukan agar bak penuh?",
+                unit: "Liter",
+                answer: 18,
+                explanation: "Kapasitas penuh = 40 × 25 × 30 = 30.000 cm³ = 30.000 ml = 30 Liter. Kekurangan air = 30 Liter - 12 Liter = 18 Liter.",
+                svg: renderSolidBoxSVG("box", "p = 40 cm", "l = 25 cm", "t = 30 cm", "teal")
+            }
+        ];
+
+        // State lokal jawaban siswa: { [questionId]: string }
+        let userAnswers = {};
+        let currentQuestionIndex = 0;
+        let isNavHidden = false;
+
+        // Toggle sembunyikan / tampilkan panel navigasi agar tampilan lebih rapi
+        function toggleNavigationPanel() {
+            isNavHidden = !isNavHidden;
+            const sidebar = document.getElementById('quiz-nav-sidebar');
+            const questionCol = document.getElementById('quiz-question-column');
+            const label = document.getElementById('nav-toggle-label');
+
+            if (isNavHidden) {
+                sidebar.classList.add('hidden');
+                questionCol.className = 'lg:col-span-12 space-y-5';
+                label.textContent = 'Tampilkan Navigasi';
+            } else {
+                sidebar.classList.remove('hidden');
+                questionCol.className = 'lg:col-span-8 space-y-5';
+                label.textContent = 'Sembunyikan Navigasi';
+            }
+        }
+
+        // Render notasi matematika KaTeX secara aman (hanya bila memang ada delimiter $)
+        function renderAllMath(rootEl = document.body) {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(rootEl, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // Parse input angka desimal dengan koma atau titik (misal "2,5" atau "2.5")
+        function parseFlexibleNumber(raw) {
+            if (typeof raw !== 'string') return NaN;
+            const trimmed = raw.trim().replace(/\s+/g, '');
+            if (!trimmed) return NaN;
+            // Jika menggunakan koma sebagai desimal, ubah koma jadi titik
+            // Hindari kesalahan jika ada pemisah ribuan tanpa desimal
+            let normalized = trimmed;
+            if (trimmed.includes(',') && !trimmed.includes('.')) {
+                normalized = trimmed.replace(',', '.');
+            } else if (trimmed.includes('.') && trimmed.includes(',')) {
+                // Misal 1.000,5 -> 1000.5
+                normalized = trimmed.replace(/\./g, '').replace(',', '.');
+            }
+            return Number(normalized);
+        }
+
+        // Cek status jawaban satu soal: 'empty' | 'correct' | 'wrong'
+        function evaluateQuestion(q) {
+            const raw = userAnswers[q.id];
+            if (!raw || !raw.trim()) return 'empty';
+            const parsed = parseFlexibleNumber(raw);
+            if (isNaN(parsed)) return 'wrong';
+            return Math.abs(parsed - q.answer) < 1e-6 ? 'correct' : 'wrong';
+        }
+
+        // Render grid tombol navigasi 1..30 di sidebar kiri
+        function renderNavigationGrid() {
+            const navGrid = document.getElementById('question-nav-grid');
+            navGrid.innerHTML = '';
+
+            QUIZ_QUESTIONS.forEach((q, idx) => {
+                const status = evaluateQuestion(q);
+                const isCurrent = idx === currentQuestionIndex;
+
+                let btnClass = 'bg-white border-2 border-slate-200 text-slate-700 hover:border-indigo-400';
+                if (status === 'correct') {
+                    btnClass = 'bg-emerald-500 border-2 border-emerald-600 text-white shadow-2xs';
+                } else if (status === 'wrong') {
+                    btnClass = 'bg-rose-500 border-2 border-rose-600 text-white shadow-2xs';
+                }
+
+                const activeRing = isCurrent ? 'ring-3 ring-indigo-300 scale-105 z-10 font-extrabold' : 'font-bold';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `h-10 rounded-xl text-xs transition-all flex items-center justify-center ${btnClass} ${activeRing}`;
+                btn.textContent = q.id;
+                btn.title = `Soal ${q.id}: ${q.topic}`;
+                btn.onclick = () => jumpToQuestion(q.id);
+                navGrid.appendChild(btn);
+            });
+        }
+
+        // Render kartu fokus soal aktif di bagian atas kolom kanan
+        function renderActiveQuestionCard() {
+            const q = QUIZ_QUESTIONS[currentQuestionIndex];
+            const status = evaluateQuestion(q);
+            const rawVal = userAnswers[q.id] || '';
+
+            document.getElementById('active-q-badge').textContent = `Soal #${q.id} dari 30`;
+            const topicBadge = document.getElementById('active-q-topic');
+            topicBadge.textContent = q.topic;
+            topicBadge.className = `text-xs font-extrabold px-3 py-1 rounded-full ${q.badgeClass}`;
+
+            const statusPill = document.getElementById('active-q-status-pill');
+            if (status === 'correct') {
+                statusPill.textContent = '✓ Benar';
+                statusPill.className = 'text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800';
+            } else if (status === 'wrong') {
+                statusPill.textContent = '✕ Salah';
+                statusPill.className = 'text-xs font-extrabold px-3 py-1 rounded-full bg-rose-100 text-rose-800';
+            } else {
+                statusPill.textContent = 'Menunggu Jawaban';
+                statusPill.className = 'text-xs font-extrabold px-3 py-1 rounded-full bg-slate-100 text-slate-600';
+            }
+
+            const bodyEl = document.getElementById('active-q-body');
+            if (q.svg) {
+                bodyEl.className = 'grid grid-cols-1 md:grid-cols-12 gap-5 items-center';
+                bodyEl.innerHTML = `
+                    <div class="md:col-span-7 space-y-2">
+                        <p class="text-slate-900 font-bold text-sm md:text-base leading-relaxed">${q.question}</p>
+                    </div>
+                    <div class="md:col-span-5">
+                        ${q.svg}
+                    </div>
+                `;
+            } else {
+                bodyEl.className = 'grid grid-cols-1 gap-4 items-center';
+                bodyEl.innerHTML = `
+                    <div class="space-y-2">
+                        <p class="text-slate-900 font-bold text-sm md:text-base leading-relaxed">${q.question}</p>
+                    </div>
+                `;
+            }
+
+            document.getElementById('active-q-unit').textContent = q.unit;
+            const inputEl = document.getElementById('essay-answer-input');
+            inputEl.value = rawVal;
+
+            updateFeedbackBox(q, status, document.getElementById('active-q-feedback'));
+
+            document.getElementById('pos-indicator').textContent = `${currentQuestionIndex + 1} / 30`;
+            document.getElementById('btn-prev-q').disabled = currentQuestionIndex === 0;
+            document.getElementById('btn-next-q').disabled = currentQuestionIndex === QUIZ_QUESTIONS.length - 1;
+
+            renderAllMath(bodyEl);
+            renderAllMath(document.getElementById('active-q-feedback'));
+        }
+
+        // Perbarui tampilan kotak umpan balik Benar/Salah
+        function updateFeedbackBox(q, status, fbEl) {
+            if (!fbEl) return;
+            if (status === 'empty') {
+                fbEl.classList.add('hidden');
+                fbEl.innerHTML = '';
+                return;
+            }
+
+            fbEl.classList.remove('hidden');
+            if (status === 'correct') {
+                fbEl.className = 'p-3.5 rounded-2xl text-xs md:text-sm font-bold bg-emerald-50 text-emerald-900 border border-emerald-300 space-y-1';
+                fbEl.innerHTML = `
+                    <div class="flex items-center gap-1.5 text-emerald-700"><span>🎉 BENAR!</span><span>Jawabanmu tepat (${q.answer.toLocaleString('id-ID')} ${q.unit}).</span></div>
+                    <p class="text-xs font-medium text-emerald-800">${q.explanation}</p>
+                `;
+            } else {
+                fbEl.className = 'p-3.5 rounded-2xl text-xs md:text-sm font-bold bg-rose-50 text-rose-900 border border-rose-300 space-y-1';
+                fbEl.innerHTML = `
+                    <div class="flex items-center gap-1.5 text-rose-700"><span>❌ SALAH.</span><span>Coba periksa kembali perhitungan atau satuannya ya!</span></div>
+                    <p class="text-xs font-medium text-rose-800">💡 Petunjuk/Pembahasan: ${q.explanation}</p>
+                `;
+            }
+            renderAllMath(fbEl);
+        }
+
+        // Perbarui statistik progres & skor di header/sidebar
+        function updateStatsDisplay() {
+            let answeredCount = 0;
+            let correctCount = 0;
+
+            QUIZ_QUESTIONS.forEach(q => {
+                const st = evaluateQuestion(q);
+                if (st !== 'empty') answeredCount++;
+                if (st === 'correct') correctCount++;
+            });
+
+            const pct = Math.round((answeredCount / QUIZ_QUESTIONS.length) * 100);
+            document.getElementById('nav-answered-count').textContent = answeredCount;
+            document.getElementById('header-correct-count').textContent = correctCount;
+            document.getElementById('progress-percent').textContent = `${pct}%`;
+            document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+        }
+
+        // Handler saat siswa mengetik jawaban pada soal ke-idx (0..29)
+        function handleEssayInput(idx, value) {
+            const q = QUIZ_QUESTIONS[idx];
+            userAnswers[q.id] = value;
+
+            if (idx === currentQuestionIndex) {
+                const focusInput = document.getElementById('essay-answer-input');
+                if (focusInput && focusInput.value !== value) focusInput.value = value;
+
+                const status = evaluateQuestion(q);
+                updateFeedbackBox(q, status, document.getElementById('active-q-feedback'));
+                const pill = document.getElementById('active-q-status-pill');
+                if (status === 'correct') {
+                    pill.textContent = '✓ Benar';
+                    pill.className = 'text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800';
+                } else if (status === 'wrong') {
+                    pill.textContent = '✕ Salah';
+                    pill.className = 'text-xs font-extrabold px-3 py-1 rounded-full bg-rose-100 text-rose-800';
+                } else {
+                    pill.textContent = 'Menunggu Jawaban';
+                    pill.className = 'text-xs font-extrabold px-3 py-1 rounded-full bg-slate-100 text-slate-600';
+                }
+            }
+
+            renderNavigationGrid();
+            updateStatsDisplay();
+            persistAnswersToCloud();
+        }
+
+        function clearCurrentAnswer() {
+            handleEssayInput(currentQuestionIndex, '');
+        }
+
+        function jumpToQuestion(qNumber) {
+            const idx = Math.max(0, Math.min(QUIZ_QUESTIONS.length - 1, qNumber - 1));
+            currentQuestionIndex = idx;
+            renderActiveQuestionCard();
+            renderNavigationGrid();
+        }
+
+        function navigateStep(delta) {
+            const nextIdx = currentQuestionIndex + delta;
+            if (nextIdx >= 0 && nextIdx < QUIZ_QUESTIONS.length) {
+                currentQuestionIndex = nextIdx;
+                renderActiveQuestionCard();
+                renderNavigationGrid();
+            }
+        }
+
+        // ======================================================================
+        // PENYIMPANAN OTOMATIS KE FIRESTORE (ANTI HILANG SAAT RELOAD / DISCONNECT)
+        // ======================================================================
+        let firestoreDocRef = null;
+        let saveDebounceTimer = null;
+
+        function setSaveIndicator(state, message) {
+            const dot = document.getElementById('save-dot');
+            const text = document.getElementById('save-status-text');
+            text.textContent = message;
+
+            if (state === 'saved') {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+            } else if (state === 'saving') {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping';
+            } else if (state === 'offline') {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-rose-400';
+            }
+        }
+
+        function persistAnswersToCloud() {
+            setSaveIndicator('saving', 'Menyimpan jawaban...');
+            if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
+
+            saveDebounceTimer = setTimeout(async () => {
+                if (!firestoreDocRef || !window.__firestoreSetDoc) {
+                    setSaveIndicator('offline', 'Mode lokal aktif (menunggu koneksi)');
+                    return;
+                }
+                try {
+                    await window.__firestoreSetDoc(
+                        firestoreDocRef,
+                        {
+                            answers: userAnswers,
+                            lastQuestionIndex: currentQuestionIndex,
+                            updatedAt: Date.now()
+                        },
+                        { merge: true }
+                    );
+                    setSaveIndicator('saved', 'Tersimpan otomatis');
+                } catch (err) {
+                    console.error('Gagal menyimpan ke cloud:', err);
+                    setSaveIndicator('offline', 'Jaringan terputus • akan tersimpan lagi');
+                }
+            }, 350);
+        }
+
+        function applyLoadedData(data) {
+            if (!data || typeof data !== 'object') return;
+            if (data.answers && typeof data.answers === 'object') {
+                userAnswers = { ...data.answers };
+            }
+            if (typeof data.lastQuestionIndex === 'number' && data.lastQuestionIndex >= 0 && data.lastQuestionIndex < QUIZ_QUESTIONS.length) {
+                currentQuestionIndex = data.lastQuestionIndex;
+            }
+            renderNavigationGrid();
+            renderActiveQuestionCard();
+            updateStatsDisplay();
+            setSaveIndicator('saved', 'Jawaban pulih & tersimpan');
+        }
+
+        // Modal Rekap Nilai
+        function openSummaryModal() {
+            let correct = 0;
+            let wrong = 0;
+            const breakdownEl = document.getElementById('modal-breakdown-list');
+            breakdownEl.innerHTML = '';
+
+            QUIZ_QUESTIONS.forEach(q => {
+                const st = evaluateQuestion(q);
+                if (st === 'correct') correct++;
+                else if (st === 'wrong') wrong++;
+
+                const statusLabel = st === 'correct'
+                    ? `<span class="text-emerald-700 font-extrabold">✓ Benar</span>`
+                    : st === 'wrong'
+                        ? `<span class="text-rose-700 font-extrabold">✕ Salah (Kunci: ${q.answer.toLocaleString('id-ID')} ${q.unit})</span>`
+                        : `<span class="text-slate-400 font-bold">• Belum dijawab</span>`;
+
+                const row = document.createElement('div');
+                row.className = 'p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-1';
+                row.innerHTML = `
+                    <div><strong class="text-slate-800">Soal ${q.id}</strong> <span class="text-slate-500">(${q.topic})</span> — Isianmu: <strong>${userAnswers[q.id] || '-'}</strong></div>
+                    <div>${statusLabel}</div>
+                `;
+                breakdownEl.appendChild(row);
+            });
+
+            const finalScore = Math.round((correct / QUIZ_QUESTIONS.length) * 100);
+            document.getElementById('modal-correct').textContent = correct;
+            document.getElementById('modal-wrong').textContent = wrong;
+            document.getElementById('modal-score').textContent = finalScore;
+            document.getElementById('summary-modal').classList.remove('hidden');
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summary-modal').classList.add('hidden');
+        }
+
+        // Modal Reset Jawaban
+        function openResetModal() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        async function confirmResetAllAnswers() {
+            userAnswers = {};
+            currentQuestionIndex = 0;
+            renderNavigationGrid();
+            renderActiveQuestionCard();
+            updateStatsDisplay();
+            closeResetModal();
+
+            if (firestoreDocRef && window.__firestoreSetDoc) {
+                try {
+                    await window.__firestoreSetDoc(firestoreDocRef, {
+                        answers: {},
+                        lastQuestionIndex: 0,
+                        updatedAt: Date.now()
+                    });
+                    setSaveIndicator('saved', 'Semua jawaban dikosongkan');
+                } catch (err) {
+                    console.error('Gagal reset di cloud:', err);
+                    setSaveIndicator('offline', 'Dikosongkan lokal (menunggu koneksi)');
+                }
+            }
+        }
+
+        // Inisialisasi awal UI sebelum auth/firestore selesai
+        renderNavigationGrid();
+        renderActiveQuestionCard();
+        updateStatsDisplay();
+        renderAllMath();
+    </script>
+
+    <!-- ====================================================================== -->
+    <!-- INTEGRASI FIRESTORE UNTUK PERSISTENSI OTOMATIS                         -->
+    <!-- ====================================================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const rawConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : '';
+        const initialToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        async function initCloudPersistence() {
+            try {
+                if (!rawConfig) {
+                    setSaveIndicator('offline', 'Penyimpanan sesi siap');
+                    return;
+                }
+                const firebaseConfig = JSON.parse(rawConfig);
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+
+                if (initialToken) {
+                    await signInWithCustomToken(auth, initialToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                const user = auth.currentUser;
+                if (!user) return;
+
+                const userId = user.uid;
+                const progressDocRef = doc(db, 'artifacts', appId, 'users', userId, 'quiz_volume_30_essay', 'progress');
+                firestoreDocRef = progressDocRef;
+                window.__firestoreSetDoc = setDoc;
+
+                // Dengarkan perubahan real-time agar tetap sinkron jika koneksi pulih
+                onSnapshot(
+                    progressDocRef,
+                    (snap) => {
+                        if (snap.exists()) {
+                            applyLoadedData(snap.data());
+                        } else {
+                            setSaveIndicator('saved', 'Tersimpan otomatis');
+                        }
+                    },
+                    (error) => {
+                        console.error('Error listener Firestore:', error);
+                        setSaveIndicator('offline', 'Jaringan terputus • isian tetap aman di layar');
+                    }
+                );
+            } catch (error) {
+                console.error('Inisialisasi penyimpanan gagal:', error);
+                setSaveIndicator('offline', 'Mode offline aktif');
+            }
+        }
+
+        window.addEventListener('online', () => {
+            if (firestoreDocRef && window.__firestoreSetDoc) {
+                persistAnswersToCloud();
+            }
+        });
+
+        window.addEventListener('offline', () => {
+            setSaveIndicator('offline', 'Koneksi terputus • jawaban tetap aman');
+        });
+
+        initCloudPersistence();
+    </script>
+</body>
+</html>
